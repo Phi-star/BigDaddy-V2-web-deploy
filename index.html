@@ -5,68 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Big Daddy V2 - Official Website</title>
     <link rel="stylesheet" href="index.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <header>
-            <h1>Welcome to Big Daddy V2</h1>
-            <p>The Official Website for Your Ultimate Bot Experience</p>
-        </header>
+        <div class="auth-container">
+            <div class="logo-container">
+                <h1>Big Daddy V2</h1>
+                <p>Premium Bot Services</p>
+            </div>
 
-        <!-- Registration Form -->
-        <div id="registerForm" class="form-container">
-            <h2>Create Your Big Daddy V2 Account</h2>
-            <form id="regForm">
-                <div class="form-group">
-                    <label for="reg-company">Company Name</label>
-                    <input type="text" id="reg-company" placeholder="Enter company name" required>
+            <!-- Login Form (shown by default) -->
+            <div id="loginForm" class="form-wrapper active">
+                <div class="form-header">
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to your account</p>
                 </div>
-                <div class="form-group">
-                    <label for="reg-email">Email Address</label>
-                    <input type="email" id="reg-email" placeholder="Enter email" required>
+                <form id="loginFormInner">
+                    <div class="input-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn primary-btn">Sign In</button>
+                </form>
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#" id="showRegister">Sign up</a></p>
                 </div>
-                <div class="form-group">
-                    <label for="reg-phone">Phone Number</label>
-                    <input type="tel" id="reg-phone" placeholder="Enter phone number" required>
+            </div>
+
+            <!-- Register Form (hidden by default) -->
+            <div id="registerForm" class="form-wrapper">
+                <div class="form-header">
+                    <h2>Create Account</h2>
+                    <p>Get started with Big Daddy V2</p>
                 </div>
-                <div class="form-group">
-                    <label for="reg-password">Password</label>
-                    <input type="password" id="reg-password" placeholder="Enter password" required>
+                <form id="regForm">
+                    <div class="input-group">
+                        <label for="reg-name">Full Name</label>
+                        <input type="text" id="reg-name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg-email">Email Address</label>
+                        <input type="email" id="reg-email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg-phone">Phone Number</label>
+                        <input type="tel" id="reg-phone" placeholder="Enter your phone" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg-password">Password</label>
+                        <input type="password" id="reg-password" placeholder="Create password" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg-confirm">Confirm Password</label>
+                        <input type="password" id="reg-confirm" placeholder="Confirm password" required>
+                    </div>
+                    <button type="submit" class="btn primary-btn">Create Account</button>
+                </form>
+                <div class="form-footer">
+                    <p>Already have an account? <a href="#" id="showLogin">Sign in</a></p>
                 </div>
-                <div class="form-group">
-                    <label for="reg-confirm">Confirm Password</label>
-                    <input type="password" id="reg-confirm" placeholder="Confirm password" required>
-                </div>
-                <button type="submit" class="btn">Create Account</button>
-            </form>
-            <p class="form-toggle">Already have an account? <a href="#" id="showLogin">Login here</a></p>
+            </div>
         </div>
 
-        <!-- Login Form -->
-        <div id="loginForm" class="form-container" style="display: none;">
-            <h2>Login to Big Daddy V2</h2>
-            <form id="loginFormInner">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="Enter email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter password" required>
-                </div>
-                <button type="submit" class="btn">Login</button>
-            </form>
-            <p class="form-toggle">Don't have an account? <a href="#" id="showRegister">Create one</a></p>
-        </div>
-
-        <!-- Modal for Success/Error Messages -->
+        <!-- Success Modal -->
         <div id="successModal" class="modal">
             <div class="modal-content">
-                <span class="close">×</span>
+                <span class="close">&times;</span>
+                <div class="modal-icon success-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    </svg>
+                </div>
                 <h3 id="modalTitle"></h3>
                 <p id="modalMessage"></p>
+                <button class="btn primary-btn modal-close-btn">Continue</button>
             </div>
         </div>
     </div>
