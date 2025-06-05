@@ -1,21 +1,21 @@
 :root {
-    --primary: #3a86ff;
-    --primary-dark: #2667cc;
-    --primary-light: #ebf3ff;
-    --secondary: #8338ec;
-    --accent: #ff006e;
-    --success: #06d6a0;
-    --warning: #ffbe0b;
-    --danger: #ef476f;
-    --dark: #1f2937;
-    --darker: #111827;
-    --light: #f9fafb;
-    --light-gray: #e5e7eb;
-    --medium-gray: #9ca3af;
-    --dark-gray: #4b5563;
+    --primary: #e63946;
+    --primary-dark: #c1121f;
+    --primary-light: #f8ad9d;
+    --secondary: #1d3557;
+    --accent: #457b9d;
+    --success: #2a9d8f;
+    --warning: #e9c46a;
+    --danger: #d62828;
+    --dark: #212529;
+    --darker: #161a1d;
+    --light: #f8f9fa;
+    --light-gray: #e9ecef;
+    --medium-gray: #adb5bd;
+    --dark-gray: #495057;
     --white: #ffffff;
-    --border-radius: 10px;
-    --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --border-radius: 8px;
+    --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
 }
 
@@ -27,8 +27,8 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--light);
-    color: var(--dark);
+    background-color: var(--darker);
+    color: var(--light);
     line-height: 1.6;
 }
 
@@ -39,12 +39,11 @@ body {
 
 .sidebar {
     width: 280px;
-    background-color: var(--white);
-    box-shadow: var(--box-shadow);
+    background-color: var(--dark);
     padding: 25px;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid var(--light-gray);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .logo-container {
@@ -78,7 +77,7 @@ body {
     margin-bottom: 30px;
     padding: 12px;
     border-radius: var(--border-radius);
-    background-color: var(--light-gray);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .avatar {
@@ -109,19 +108,19 @@ body {
     gap: 12px;
     padding: 12px 15px;
     border-radius: var(--border-radius);
-    color: var(--dark);
+    color: var(--light);
     text-decoration: none;
     transition: var(--transition);
     font-weight: 500;
 }
 
 .nav-menu li a:hover {
-    background-color: var(--light-gray);
-    color: var(--primary);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--primary-light);
 }
 
 .nav-menu li.active a {
-    background-color: var(--primary-light);
+    background-color: rgba(230, 57, 70, 0.2);
     color: var(--primary);
     font-weight: 600;
 }
@@ -141,25 +140,25 @@ body {
     display: block;
     width: 100%;
     padding: 12px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background: linear-gradient(135deg, var(--primary), var(--danger));
     color: white;
     text-align: center;
     border-radius: var(--border-radius);
     text-decoration: none;
     font-weight: 600;
     transition: var(--transition);
-    box-shadow: 0 4px 15px rgba(58, 134, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
 }
 
 .upgrade-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(58, 134, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(230, 57, 70, 0.4);
 }
 
 .main-content {
     flex: 1;
     padding: 30px;
-    background-color: var(--light);
+    background-color: var(--dark);
 }
 
 .content-header {
@@ -172,7 +171,7 @@ body {
 .content-header h2 {
     font-size: 1.8rem;
     font-weight: 700;
-    color: var(--dark);
+    color: var(--light);
 }
 
 .btn {
@@ -196,17 +195,17 @@ body {
 .btn-primary:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
+    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.3);
 }
 
 .btn-outline {
     background-color: transparent;
     border: 1px solid var(--medium-gray);
-    color: var(--dark);
+    color: var(--light);
 }
 
 .btn-outline:hover {
-    background-color: var(--light-gray);
+    background-color: rgba(255, 255, 255, 0.1);
     border-color: var(--primary);
     color: var(--primary);
 }
@@ -224,17 +223,17 @@ body {
 }
 
 .card {
-    background-color: var(--white);
+    background-color: var(--darker);
     border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
     padding: 25px;
-    border: 1px solid var(--light-gray);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--box-shadow);
 }
 
 .welcome-card {
     grid-column: span 2;
-    background: linear-gradient(135deg, var(--primary-light), white);
-    border: 1px solid var(--primary-light);
+    background: linear-gradient(135deg, rgba(230, 57, 70, 0.1), var(--darker));
+    border: 1px solid rgba(230, 57, 70, 0.2);
 }
 
 .welcome-card .card-content {
@@ -249,7 +248,7 @@ body {
 
 .welcome-card p {
     margin-bottom: 20px;
-    color: var(--dark-gray);
+    color: var(--medium-gray);
 }
 
 .stats-card .stats-grid {
@@ -264,8 +263,9 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 15px;
-    background-color: var(--light-gray);
+    background-color: rgba(255, 255, 255, 0.05);
     border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .stat-item i {
@@ -277,7 +277,7 @@ body {
 .stat-value {
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--dark);
+    color: var(--light);
 }
 
 .stat-label {
@@ -300,18 +300,20 @@ body {
 .console-header h3 {
     font-size: 1.3rem;
     font-weight: 700;
+    color: var(--light);
 }
 
 .console-output {
     height: 350px;
     overflow-y: auto;
-    background-color: var(--darker);
+    background-color: rgba(0, 0, 0, 0.3);
     border-radius: var(--border-radius);
     padding: 15px;
     font-family: 'Courier New', monospace;
     font-size: 0.9rem;
     line-height: 1.5;
     color: var(--light);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .console-line {
@@ -344,31 +346,20 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background-color: var(--white);
+    background-color: var(--darker);
     border-radius: var(--border-radius);
     width: 90%;
     max-width: 450px;
     padding: 25px;
-    box-shadow: var(--box-shadow);
-    animation: modalFadeIn 0.3s ease-out;
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header {
@@ -380,7 +371,7 @@ body {
 
 .modal-header h3 {
     font-size: 1.4rem;
-    color: var(--dark);
+    color: var(--light);
 }
 
 .close {
@@ -393,7 +384,7 @@ body {
 }
 
 .close:hover {
-    color: var(--dark);
+    color: var(--light);
 }
 
 .modal-body {
@@ -402,7 +393,7 @@ body {
 
 .modal-body p {
     margin-bottom: 15px;
-    color: var(--dark-gray);
+    color: var(--medium-gray);
 }
 
 .telegram-link {
@@ -414,12 +405,12 @@ body {
     font-weight: 600;
     text-decoration: none;
     padding: 10px 15px;
-    background-color: var(--primary-light);
+    background-color: rgba(230, 57, 70, 0.1);
     border-radius: var(--border-radius);
 }
 
 .telegram-link:hover {
-    background-color: rgba(58, 134, 255, 0.2);
+    background-color: rgba(230, 57, 70, 0.2);
 }
 
 .telegram-link i {
@@ -435,16 +426,18 @@ body {
 .input-group input {
     flex: 1;
     padding: 12px 15px;
-    border: 1px solid var(--light-gray);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius);
     font-size: 1rem;
     transition: var(--transition);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--light);
 }
 
 .input-group input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
 }
 
 #passcodeStatus, #whatsappStatus {
@@ -456,28 +449,28 @@ body {
 }
 
 .status-success {
-    background-color: rgba(6, 214, 160, 0.1);
+    background-color: rgba(42, 157, 143, 0.1);
     color: var(--success);
     border: 1px solid var(--success);
     display: block !important;
 }
 
 .status-error {
-    background-color: rgba(239, 71, 111, 0.1);
+    background-color: rgba(214, 40, 40, 0.1);
     color: var(--danger);
     border: 1px solid var(--danger);
     display: block !important;
 }
 
 .status-warning {
-    background-color: rgba(255, 190, 11, 0.1);
+    background-color: rgba(233, 196, 106, 0.1);
     color: var(--warning);
     border: 1px solid var(--warning);
     display: block !important;
 }
 
 .status-info {
-    background-color: rgba(58, 134, 255, 0.1);
+    background-color: rgba(230, 57, 70, 0.1);
     color: var(--primary);
     border: 1px solid var(--primary);
     display: block !important;
@@ -488,9 +481,10 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 12px 15px;
-    background-color: var(--light-gray);
+    background-color: rgba(255, 255, 255, 0.05);
     border-radius: var(--border-radius);
     margin-top: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .pairing-code span {
