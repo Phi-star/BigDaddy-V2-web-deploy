@@ -6,7 +6,7 @@
     <title>Big Daddy V2 - Dashboard</title>
     <link rel="stylesheet" href="dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="app-container">
@@ -20,21 +20,23 @@
                 <span id="username">User</span>
             </div>
             <ul class="nav-menu">
-                <li class="active"><a href="#"><i class="icon-dashboard"></i> Dashboard</a></li>
-                <li><a href="#"><i class="icon-deploy"></i> Deploy Bot</a></li>
-                <li><a href="#"><i class="icon-settings"></i> Settings</a></li>
+                <li class="active"><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#deploy-section"><i class="fas fa-rocket"></i> Deploy Bot</a></li>
+                <li><a href="my-bots.html"><i class="fas fa-robot"></i> My Bots</a></li>
+                <li><a href="documentation.html"><i class="fas fa-book"></i> Documentation</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
             </ul>
             <div class="sidebar-footer">
-                <a href="#" class="upgrade-btn">UPGRADE TO PREMIUM</a>
+                <a href="premium.html" class="upgrade-btn">UPGRADE TO PREMIUM</a>
             </div>
         </nav>
 
         <!-- Main Content -->
         <main class="main-content">
             <header class="content-header">
-                <h2>Dashboard</h2>
+                <h2 id="dashboard">Dashboard</h2>
                 <div class="header-actions">
-                    <button id="logoutBtn" class="btn btn-outline">Logout</button>
+                    <button id="logoutBtn" class="btn btn-outline"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
             </header>
 
@@ -44,35 +46,33 @@
                     <div class="card-content">
                         <h3>Welcome to Big Daddy V2</h3>
                         <p id="welcomeMessage">Ready to deploy your WhatsApp bot</p>
-                        <button id="startDeployBtn" class="btn btn-primary">Start Deployment</button>
+                        <button id="startDeployBtn" class="btn btn-primary"><i class="fas fa-play"></i> Start Deployment</button>
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
-                <div class="card quick-actions">
-                    <h3 class="card-title">Quick Actions</h3>
-                    <div class="action-buttons">
-                        <button class="action-btn">
-                            <i class="icon-bot"></i>
-                            <span>My Bots</span>
-                        </button>
-                        <button class="action-btn">
-                            <i class="icon-docs"></i>
-                            <span>Documentation</span>
-                        </button>
-                        <button class="action-btn">
-                            <i class="icon-support"></i>
-                            <span>Support</span>
-                        </button>
+                <!-- Quick Stats -->
+                <div class="card stats-card">
+                    <h3 class="card-title">Your Stats</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">Active Bots</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">Days Remaining</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Deployment Console -->
-                <div class="card console-card">
+                <div class="card console-card" id="deploy-section">
                     <div class="console-header">
                         <h3>Deployment Console</h3>
                         <div class="console-actions">
-                            <button id="clearConsoleBtn" class="btn btn-sm">Clear</button>
+                            <button id="clearConsoleBtn" class="btn btn-sm"><i class="fas fa-trash"></i> Clear</button>
                         </div>
                     </div>
                     <div id="consoleOutput" class="console-output">
@@ -85,7 +85,7 @@
 
     <!-- Passcode Modal -->
     <div id="passcodeModal" class="modal">
-        <div class="modal-content animate__animated animate__zoomIn">
+        <div class="modal-content">
             <div class="modal-header">
                 <h3>Enter Passcode</h3>
                 <button class="close">&times;</button>
@@ -93,11 +93,11 @@
             <div class="modal-body">
                 <p>Get your passcode from our Telegram bot:</p>
                 <a href="https://t.me/BigDaddyV2passcodeBot" target="_blank" class="telegram-link">
-                    @BigDaddyV2passcodeBot
+                    <i class="fab fa-telegram"></i> @BigDaddyV2passcodeBot
                 </a>
                 <div class="input-group">
                     <input type="text" id="passcodeInput" maxlength="4" placeholder="Enter 4-digit code">
-                    <button id="submitPasscodeBtn" class="btn btn-primary">Verify</button>
+                    <button id="submitPasscodeBtn" class="btn btn-primary"><i class="fas fa-check"></i> Verify</button>
                 </div>
                 <div id="passcodeStatus"></div>
             </div>
@@ -106,7 +106,7 @@
 
     <!-- WhatsApp Number Modal -->
     <div id="whatsappModal" class="modal">
-        <div class="modal-content animate__animated animate__zoomIn">
+        <div class="modal-content">
             <div class="modal-header">
                 <h3>Pair WhatsApp Number</h3>
                 <button class="close">&times;</button>
@@ -115,13 +115,13 @@
                 <p>Enter your WhatsApp number with country code (without spaces)</p>
                 <div class="input-group">
                     <input type="text" id="whatsappInput" placeholder="e.g. 2349012345678">
-                    <button id="submitWhatsappBtn" class="btn btn-primary">Submit</button>
+                    <button id="submitWhatsappBtn" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit</button>
                 </div>
                 <div id="pairingCodeContainer" style="display: none;">
                     <h4>Your Pairing Code:</h4>
                     <div class="pairing-code">
                         <span id="pairingCode"></span>
-                        <button id="copyCodeBtn" class="btn btn-sm">Copy</button>
+                        <button id="copyCodeBtn" class="btn btn-sm"><i class="fas fa-copy"></i> Copy</button>
                     </div>
                 </div>
                 <div id="whatsappStatus"></div>
