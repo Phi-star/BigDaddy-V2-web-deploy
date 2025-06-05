@@ -20,7 +20,7 @@
                 <span id="username">User</span>
             </div>
             <ul class="nav-menu">
-                <li class="active"><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="active"><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="#deploy-section"><i class="fas fa-rocket"></i> Deploy Bot</a></li>
                 <li><a href="my-bots.html"><i class="fas fa-robot"></i> My Bots</a></li>
                 <li><a href="documentation.html"><i class="fas fa-book"></i> Documentation</a></li>
@@ -72,6 +72,8 @@
                     <div class="console-header">
                         <h3>Deployment Console</h3>
                         <div class="console-actions">
+                            <button id="restartBotBtn" class="btn btn-sm" style="display:none;"><i class="fas fa-sync-alt"></i> Restart</button>
+                            <button id="stopBotBtn" class="btn btn-sm" style="display:none;"><i class="fas fa-stop"></i> Stop</button>
                             <button id="clearConsoleBtn" class="btn btn-sm"><i class="fas fa-trash"></i> Clear</button>
                         </div>
                     </div>
@@ -96,7 +98,7 @@
                     <i class="fab fa-telegram"></i> @BigDaddyV2passcodeBot
                 </a>
                 <div class="input-group">
-                    <input type="text" id="passcodeInput" maxlength="4" placeholder="Enter 4-digit code">
+                    <input type="text" id="passcodeInput" maxlength="9" placeholder="Enter 9-digit code">
                     <button id="submitPasscodeBtn" class="btn btn-primary"><i class="fas fa-check"></i> Verify</button>
                 </div>
                 <div id="passcodeStatus"></div>
@@ -120,7 +122,7 @@
                 <div id="pairingCodeContainer" style="display: none;">
                     <h4>Your Pairing Code:</h4>
                     <div class="pairing-code">
-                        <span id="pairingCode"></span>
+                        <span id="pairingCode">DRAY-1922</span>
                         <button id="copyCodeBtn" class="btn btn-sm"><i class="fas fa-copy"></i> Copy</button>
                     </div>
                 </div>
