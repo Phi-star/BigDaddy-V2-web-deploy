@@ -5,45 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Big Daddy V2 - Dashboard</title>
     <link rel="stylesheet" href="dashboard.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
-<body class="dark-red-theme">
-    <div class="dashboard-container">
-        <header class="dashboard-header">
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
             <div class="logo-container">
-                <h1>BIG DADDY <span class="tech-version">V<span class="version-number">2</span></span></h1>
-                <p>PREMIUM BOT SERVICES</p>
+                <h1>BIG DADDY <span class="version">V2</span></h1>
             </div>
-            <div class="user-welcome">
-                <h2 id="welcomeMessage">Welcome back, User</h2>
+            <div class="user-info">
+                <div class="avatar">U</div>
+                <span id="username">User</span>
             </div>
-        </header>
+            <ul class="nav-menu">
+                <li class="active"><a href="#"><i class="icon-dashboard"></i> Dashboard</a></li>
+                <li><a href="#"><i class="icon-deploy"></i> Deploy Bot</a></li>
+                <li><a href="#"><i class="icon-settings"></i> Settings</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="#" class="upgrade-btn">UPGRADE TO PREMIUM</a>
+            </div>
+        </nav>
 
-        <main class="dashboard-content">
-            <section class="tutorial-section">
-                <h3>How to Deploy Big Daddy V2</h3>
-                <ol class="tutorial-steps">
-                    <li>Click the "View Panel" button below</li>
-                    <li>Fill in your passcode from our Telegram bot</li>
-                    <li>Follow the deployment process in the panel</li>
-                </ol>
-                
-                <div class="action-buttons">
-                    <button id="viewPanelBtn" class="btn primary-btn">VIEW PANEL</button>
-                    <button id="premiumBtn" class="btn secondary-btn">UPGRADE TO PREMIUM</button>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h2>Dashboard</h2>
+                <div class="header-actions">
+                    <button id="logoutBtn" class="btn btn-outline">Logout</button>
                 </div>
-            </section>
+            </header>
 
-            <section class="premium-info">
-                <h3>Premium Version Benefits</h3>
-                <ul>
-                    <li>Faster deployment and execution</li>
-                    <li>More powerful features</li>
-                    <li>Priority support</li>
-                    <li>Only ₦5,000</li>
-                </ul>
-            </section>
+            <div class="dashboard-grid">
+                <!-- Welcome Card -->
+                <div class="card welcome-card">
+                    <div class="card-content">
+                        <h3>Welcome to Big Daddy V2</h3>
+                        <p id="welcomeMessage">Ready to deploy your WhatsApp bot</p>
+                        <button id="startDeployBtn" class="btn btn-primary">Start Deployment</button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card quick-actions">
+                    <h3 class="card-title">Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn">
+                            <i class="icon-bot"></i>
+                            <span>My Bots</span>
+                        </button>
+                        <button class="action-btn">
+                            <i class="icon-docs"></i>
+                            <span>Documentation</span>
+                        </button>
+                        <button class="action-btn">
+                            <i class="icon-support"></i>
+                            <span>Support</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Deployment Console -->
+                <div class="card console-card">
+                    <div class="console-header">
+                        <h3>Deployment Console</h3>
+                        <div class="console-actions">
+                            <button id="clearConsoleBtn" class="btn btn-sm">Clear</button>
+                        </div>
+                    </div>
+                    <div id="consoleOutput" class="console-output">
+                        <div class="console-line">System ready. Click "Start Deployment" to begin.</div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -51,56 +87,44 @@
     <div id="passcodeModal" class="modal">
         <div class="modal-content animate__animated animate__zoomIn">
             <div class="modal-header">
-                <h3>Enter Your Passcode</h3>
-                <span class="close">&times;</span>
+                <h3>Enter Passcode</h3>
+                <button class="close">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Get your passcode from our Telegram bot:</p>
                 <a href="https://t.me/BigDaddyV2passcodeBot" target="_blank" class="telegram-link">
-                    <span>@BigDaddyV2passcodeBot</span>
+                    @BigDaddyV2passcodeBot
                 </a>
-                <div class="passcode-input">
-                    <input type="text" id="passcode" maxlength="4" placeholder="4-digit code">
-                    <button id="submitPasscode" class="btn primary-btn">SUBMIT</button>
+                <div class="input-group">
+                    <input type="text" id="passcodeInput" maxlength="4" placeholder="Enter 4-digit code">
+                    <button id="submitPasscodeBtn" class="btn btn-primary">Verify</button>
                 </div>
-                <div id="passcodeStatus" class="status-message"></div>
+                <div id="passcodeStatus"></div>
             </div>
         </div>
     </div>
 
-    <!-- Panel Page (hidden initially) -->
-    <div id="panelPage" class="panel-container">
-        <div class="panel-header">
-            <h2>Big Daddy V2 Deployment Panel</h2>
-            <button id="stopBotBtn" class="btn danger-btn" style="display: none;">STOP BOT</button>
-        </div>
-        
-        <div class="console-container">
-            <div class="console-header">
-                <span>DEPLOYMENT CONSOLE</span>
-                <div class="console-controls">
-                    <button id="startDeployBtn" class="btn primary-btn">START</button>
+    <!-- WhatsApp Number Modal -->
+    <div id="whatsappModal" class="modal">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="modal-header">
+                <h3>Pair WhatsApp Number</h3>
+                <button class="close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Enter your WhatsApp number with country code (without spaces)</p>
+                <div class="input-group">
+                    <input type="text" id="whatsappInput" placeholder="e.g. 2349012345678">
+                    <button id="submitWhatsappBtn" class="btn btn-primary">Submit</button>
                 </div>
-            </div>
-            <div id="consoleOutput" class="console-output">
-                <div class="console-line">Big Daddy V2 Deployment Panel Ready</div>
-                <div class="console-line">Waiting for initialization...</div>
-            </div>
-        </div>
-
-        <div id="phoneInputSection" class="phone-input-section" style="display: none;">
-            <h3>Enter WhatsApp Number</h3>
-            <p>Include country code without spaces (e.g., 2349012345678)</p>
-            <div class="input-group">
-                <input type="text" id="whatsappNumber" placeholder="WhatsApp number with country code">
-                <button id="submitNumberBtn" class="btn primary-btn">SUBMIT</button>
-            </div>
-            <div id="pairingCodeSection" style="display: none;">
-                <h4>Your Pairing Code:</h4>
-                <div class="pairing-code">
-                    <span id="pairingCodeText"></span>
-                    <button id="copyCodeBtn" class="btn small-btn">COPY</button>
+                <div id="pairingCodeContainer" style="display: none;">
+                    <h4>Your Pairing Code:</h4>
+                    <div class="pairing-code">
+                        <span id="pairingCode"></span>
+                        <button id="copyCodeBtn" class="btn btn-sm">Copy</button>
+                    </div>
                 </div>
+                <div id="whatsappStatus"></div>
             </div>
         </div>
     </div>
