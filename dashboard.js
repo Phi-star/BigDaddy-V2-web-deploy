@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const consoleOutput = document.getElementById('consoleOutput');
     const clearConsoleBtn = document.getElementById('clearConsoleBtn');
     const closeButtons = document.querySelectorAll('.close');
+    const logoutBtn = document.getElementById('logoutBtn');
     
     // Set username from localStorage
     const currentUser = JSON.parse(localStorage.getItem(localStorage.getItem('currentUser')));
@@ -52,6 +53,11 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             this.closest('.modal').style.display = 'none';
         });
+    });
+    
+    logoutBtn.addEventListener('click', function() {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
     });
     
     window.addEventListener('click', function(event) {
@@ -97,13 +103,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 TIMEOUT
             );
             
-            if (response && response.includes('approved')) {
+            if (response && response.toLowerCase().includes('approved')) {
                 showStatus(passcodeStatus, 'Passcode verified successfully!', 'success');
                 setTimeout(() => {
                     passcodeModal.style.display = 'none';
                     startDeploymentProcess();
                 }, 1500);
-            } else if (response && response.includes('decline')) {
+            } else if (response && response.toLowerCase().includes('decline')) {
                 showStatus(passcodeStatus, 'Incorrect passcode. Please get a valid passcode from the Telegram bot.', 'error');
             } else {
                 showStatus(passcodeStatus, 'Failed to verify passcode. Please try again.', 'error');
@@ -191,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             TIMEOUT
                         );
                         
-                        if (errorResponse && errorResponse.includes('already connected')) {
+                        if (errorResponse && errorResponse.toLowerCase().includes('already connected')) {
                             showStatus(whatsappStatus, 'This WhatsApp is already connected. Please disconnect it first.', 'error');
                             addConsoleLine(`⚠️ ${phoneNumber} is already connected to Big Daddy V1mini. Use /delpair to disconnect first!`, 'error');
                         } else {
@@ -211,9 +217,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function copyPairingCode() {
         navigator.clipboard.writeText(pairingCode.textContent)
             .then(() => {
-                copyCodeBtn.textContent = 'Copied!';
+                const originalText = copyCodeBtn.innerHTML;
+                copyCodeBtn.innerHTML = '<i class="fas fa-check"></i> Copied';
                 setTimeout(() => {
-                    copyCodeBtn.textContent = 'Copy';
+                    copyCodeBtn.innerHTML = originalText;
                 }, 2000);
             })
             .catch(err => {
@@ -243,10 +250,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return new Promise((resolve, reject) => {
             const startTime = Date.now();
             let lastUpdateId = 0;
+            let pollingActive = true;
             
             const pollInterval = setInterval(async () => {
+                if (!pollingActive) return;
+                
                 if (Date.now() - startTime > timeout) {
                     clearInterval(pollInterval);
+                    pollingActive = false;
                     resolve(null);
                     return;
                 }
@@ -257,6 +268,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         lastUpdateId = updates.result[updates.result.length - 1].update_id + 1;
                         
                         for (const update of updates.result) {
+                            if (!pollingActive) break;
+                            
                             if (update.message && update.message.chat.id.toString() === GROUP_ID.toString().replace('-', '')) {
                                 const messageText = update.message.text || '';
                                 
@@ -265,14 +278,16 @@ document.addEventListener('DOMContentLoaded', function() {
                                     // Check for success keywords if provided
                                     if (successKeywords) {
                                         for (const keyword of successKeywords) {
-                                            if (messageText.includes(keyword)) {
+                                            if (messageText.toLowerCase().includes(keyword.toLowerCase())) {
                                                 clearInterval(pollInterval);
+                                                pollingActive = false;
                                                 resolve(messageText);
                                                 return;
                                             }
                                         }
                                     } else {
                                         clearInterval(pollInterval);
+                                        pollingActive = false;
                                         resolve(messageText);
                                         return;
                                     }
@@ -283,6 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } catch (error) {
                     console.error('Polling error:', error);
                     clearInterval(pollInterval);
+                    pollingActive = false;
                     reject(error);
                 }
             }, POLL_INTERVAL);
