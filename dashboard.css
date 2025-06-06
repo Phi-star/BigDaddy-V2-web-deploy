@@ -74,26 +74,26 @@ body {
 
 .theme-toggle-container {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    background-color: var(--dark);
+    padding: 8px 12px;
+    border-radius: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
-    gap: 10px;
-    z-index: 1000;
-    color: var(--light);
 }
 
 .theme-toggle {
     display: flex;
-    gap: 5px;
-    background-color: var(--dark);
-    padding: 5px;
-    border-radius: 30px;
+    gap: 8px;
 }
 
 .theme-btn {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     border: none;
     cursor: pointer;
@@ -101,24 +101,31 @@ body {
     align-items: center;
     justify-content: center;
     transition: var(--transition);
+    background-color: var(--dark-gray);
+    color: var(--light);
+    font-size: 14px;
 }
 
 .theme-btn.active {
     transform: scale(1.1);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 }
 
-.theme-btn.dark {
+.theme-btn:hover {
+    transform: scale(1.1);
+}
+
+.theme-btn.dark.active {
     background-color: #212529;
     color: white;
 }
 
-.theme-btn.light {
+.theme-btn.light.active {
     background-color: #f8f9fa;
     color: #212529;
 }
 
-.theme-btn.blue {
+.theme-btn.blue.active {
     background-color: #3a86ff;
     color: white;
 }
@@ -126,6 +133,7 @@ body {
 .app-container {
     display: flex;
     min-height: 100vh;
+    padding-top: 60px; /* Added to prevent content from being hidden behind fixed theme toggle */
 }
 
 .sidebar {
@@ -626,5 +634,17 @@ body {
     .modal-content {
         width: 95%;
         padding: 20px;
+    }
+    
+    .theme-toggle-container {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+    }
+    
+    .theme-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
     }
 }
