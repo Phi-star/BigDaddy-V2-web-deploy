@@ -20,7 +20,13 @@
 
     <div class="app-container">
         <nav class="sidebar">
-            <!-- Same sidebar as dashboard.html -->
+            <!-- Placeholder for sidebar content (same as dashboard.html) -->
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="documentation.html" class="active"><i class="fas fa-book"></i> Documentation</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
         </nav>
         <main class="main-content">
             <header class="content-header">
@@ -34,4 +40,74 @@
                     <h3>Big Daddy V2 Documentation</h3>
                     <div class="doc-section">
                         <h4>Getting Started</h4>
-                        <p>Learn how to deploy and use your
+                        <p>Learn how to deploy and use Big Daddy V2, a powerful tool for managing and analyzing large-scale data workflows.</p>
+                        <ul>
+                            <li><strong>Installation:</strong> Download the latest version from the <a href="https://bigdaddyv2.example.com/download">official website</a>. Ensure you have Node.js v16+ and Python 3.8+ installed.</li>
+                            <li><strong>Setup:</strong> Run <code>npm install bigdaddy-v2</code> followed by <code>python setup.py</code> to configure the environment.</li>
+                            <li><strong>Initial Configuration:</strong> Edit the <code>config.json</code> file in the root directory to set your API keys and database connections.</li>
+                        </ul>
+                    </div>
+                    <div class="doc-section">
+                        <h4>Core Features</h4>
+                        <p>Big Daddy V2 offers a range of features to streamline your workflow:</p>
+                        <ul>
+                            <li><strong>Data Processing:</strong> Process datasets with built-in parallel computing support.</li>
+                            <li><strong>Visualization:</strong> Generate real-time charts and graphs using the integrated dashboard.</li>
+                            <li><strong>API Integration:</strong> Connect to external services via RESTful APIs.</li>
+                            <li><strong>Automation:</strong> Schedule tasks and automate repetitive processes with the task scheduler.</li>
+                        </ul>
+                    </div>
+                    <div class="doc-section">
+                        <h4>Usage Examples</h4>
+                        <p>Below are some common use cases with code snippets:</p>
+                        <h5>Processing a Dataset</h5>
+                        <pre><code class="language-javascript">
+const bigDaddy = require('bigdaddy-v2');
+const dataset = bigDaddy.loadDataset('data.csv');
+dataset.process({ parallel: true, output: 'json' })
+    .then(result => console.log(result));
+                        </code></pre>
+                        <h5>Creating a Visualization</h5>
+                        <pre><code class="language-javascript">
+bigDaddy.visualize({
+    type: 'bar',
+    data: dataset,
+    options: { title: 'Sales Data', xAxis: 'Month', yAxis: 'Revenue' }
+});
+                        </code></pre>
+                    </div>
+                    <div class="doc-section">
+                        <h4>API Reference</h4>
+                        <p>The Big Daddy V2 API provides endpoints for managing data and configurations. Key endpoints include:</p>
+                        <ul>
+                            <li><code>POST /api/v2/data/upload</code>: Upload a new dataset.</li>
+                            <li><code>GET /api/v2/data/{id}</code>: Retrieve processed data by ID.</li>
+                            <li><code>PUT /api/v2/config</code>: Update system configurations.</li>
+                        </ul>
+                        <p>Refer to the <a href="https://bigdaddyv2.example.com/api-docs">API Documentation</a> for full details.</p>
+                    </div>
+                    <div class="doc-section">
+                        <h4>Troubleshooting</h4>
+                        <p>Common issues and solutions:</p>
+                        <ul>
+                            <li><strong>Error: "Cannot connect to database"</strong>: Verify your database credentials in <code>config.json</code>.</li>
+                            <li><strong>Slow performance</strong>: Increase the <code>maxThreads</code> setting for parallel processing.</li>
+                            <li><strong>API errors</strong>: Ensure your API key is valid and not expired.</li>
+                        </ul>
+                        <p>For further assistance, contact support at <a href="mailto:support@bigdaddyv2.example.com">support@bigdaddyv2.example.com</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+    <script>
+        // Logout button functionality (placeholder)
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            alert('Logging out...');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
