@@ -41,8 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const theme = this.dataset.theme;
             document.body.className = `${theme}-theme`;
             
+            // Update active button
             themeBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
+            
+            // Save theme preference
             localStorage.setItem('theme', theme);
         });
     });
@@ -54,17 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Event Listeners
     startDeployBtn.addEventListener('click', () => {
-        if (isBotRunning) {
-            addConsoleLine('Bot is already running', 'warning');
-            return;
-        }
-        if (connectedNumber) {
-            // If we have a connected number, skip to deployment
-            startDeploymentProcess();
-        } else {
-            // Fresh start - ask for passcode first
-            passcodeModal.style.display = 'flex';
-        }
+        passcodeModal.style.display = 'flex';
     });
     
     passcodeInput.addEventListener('input', function() {
@@ -72,8 +65,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     submitPasscodeBtn.addEventListener('click', verifyPasscode);
+    
     submitWhatsappBtn.addEventListener('click', pairWhatsAppNumber);
+    
     copyCodeBtn.addEventListener('click', copyPairingCode);
+    
     clearConsoleBtn.addEventListener('click', () => {
         consoleOutput.innerHTML = '<div class="console-line">Console cleared</div>';
     });
@@ -122,21 +118,25 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // Check if passcode has 6 in first 3 digits
         const firstThree = passcode.substring(0, 3);
         if (firstThree.includes('6')) {
+            // Auto-verify passcode with 6 in first 3 digits
             showStatus(passcodeStatus, 'Passcode verified successfully!', 'success');
             setTimeout(() => {
                 passcodeModal.style.display = 'none';
-                whatsappModal.style.display = 'flex';
+                startDeploymentProcess();
             }, 1500);
         } else {
             showStatus(passcodeStatus, 'Failed to verify passcode. Please get passcode from Telegram bot.', 'error');
+            return;
         }
     }
     
     async function startDeploymentProcess() {
         addConsoleLine('Starting Big Daddy V2 deployment...', 'info');
         
+        // Simulate deployment steps
         const steps = [
             { text: 'Initializing system...', delay: 1000 },
             { text: 'Connecting to servers...', delay: 1500 },
@@ -144,7 +144,8 @@ document.addEventListener('DOMContentLoaded', function() {
             { text: 'Downloading required packages...', delay: 2500 },
             { text: 'Verifying dependencies...', delay: 2000 },
             { text: 'Building deployment package...', delay: 3000 },
-            { text: 'Deployment ready!', delay: 1000, type: 'success' }
+            { text: 'Deployment ready!', delay: 1000, type: 'success' },
+            { text: 'Please pair your WhatsApp number to continue', delay: 0, type: 'info' }
         ];
         
         for (const step of steps) {
@@ -152,10 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
             addConsoleLine(step.text, step.type || 'info');
         }
         
-        if (!connectedNumber) {
-            addConsoleLine('Please enter your WhatsApp number to continue', 'info');
-            whatsappModal.style.display = 'flex';
-        }
+        // Show WhatsApp number modal
+        whatsappModal.style.display = 'flex';
     }
     
     async function pairWhatsAppNumber() {
@@ -167,33 +166,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         connectedNumber = phoneNumber;
-        showStatus(whatsappStatus, 'Processing your WhatsApp number...', 'info');
+        showStatus(whatsappStatus, 'Pairing your WhatsApp number...', 'info');
         
         try {
+            // Send pair command to Telegram group
             await sendTelegramMessage(`/pair ${phoneNumber}`);
-            showStatus(whatsappStatus, 'Number submitted successfully! Generating pairing code...', 'success');
             
+            // Show pairing code immediately
+            pairingCodeContainer.style.display = 'block';
+            showStatus(whatsappStatus, 'WhatsApp number paired successfully!', 'success');
+            
+            // Show connection status after 30 seconds
             setTimeout(() => {
-                pairingCodeContainer.style.display = 'block';
-                showStatus(whatsappStatus, 'Pairing code generated successfully!', 'success');
+                addConsoleLine('╭⭑━━━➤ PHISTAR BOT INC', 'info');
+                addConsoleLine('┣ ◁️ Connected successfully to', 'info');
+                addConsoleLine(`┣ ◁️ ${phoneNumber}`, 'info');
+                addConsoleLine('╰━━━━━━━━━━━━━━━━━━━╯', 'info');
+                addConsoleLine('Your bot is now live on your WhatsApp!', 'success');
                 
-                setTimeout(() => {
-                    addConsoleLine('╭⭑━━━➤ PHISTAR BOT INC', 'info');
-                    addConsoleLine(`┣ ◁️ Connecting to ${phoneNumber}...`, 'info');
-                    addConsoleLine('╰━━━━━━━━━━━━━━━━━━━╯', 'info');
-                    
-                    setTimeout(() => {
-                        addConsoleLine('Connection established successfully!', 'success');
-                        whatsappModal.style.display = 'none';
-                        isBotRunning = true;
-                        stopBotBtn.style.display = 'inline-flex';
-                        restartBotBtn.style.display = 'inline-flex';
-                    }, 3000);
-                }, 2000);
-            }, 2000);
+                // Hide modal and show stop/restart buttons
+                whatsappModal.style.display = 'none';
+                isBotRunning = true;
+                stopBotBtn.style.display = 'inline-flex';
+                restartBotBtn.style.display = 'inline-flex';
+            }, 30000);
         } catch (error) {
             console.error('Error:', error);
-            showStatus(whatsappStatus, 'Failed to process WhatsApp number. Please try again.', 'error');
+            showStatus(whatsappStatus, 'Failed to pair WhatsApp number. Please try again.', 'error');
         }
     }
     
@@ -207,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isBotRunning = false;
             stopBotBtn.style.display = 'none';
             restartBotBtn.style.display = 'none';
+            pairingCodeContainer.style.display = 'none';
         } catch (error) {
             console.error('Error:', error);
             addConsoleLine('Failed to stop bot. Please try again.', 'error');
@@ -217,25 +217,34 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!connectedNumber) return;
         
         addConsoleLine('Restarting bot...', 'info');
-        addConsoleLine('Stopping current instance...', 'info');
+        addConsoleLine('Stopping bot...', 'info');
         
         try {
+            // Stop the bot
             await sendTelegramMessage(`/delpair ${connectedNumber}`);
-            addConsoleLine('Bot stopped successfully', 'success');
+            addConsoleLine('Bot stopped', 'info');
             
+            // Wait 10 seconds
             addConsoleLine('Waiting 10 seconds before restart...', 'info');
             await new Promise(resolve => setTimeout(resolve, 10000));
             
+            // Start the bot again
             addConsoleLine('Starting bot again...', 'info');
             await sendTelegramMessage(`/pair ${connectedNumber}`);
-            addConsoleLine('Bot restart initiated successfully', 'success');
             
+            // Show pairing code again
+            pairingCodeContainer.style.display = 'block';
+            addConsoleLine('Bot restarted successfully', 'success');
+            addConsoleLine('Your new pairing code: DRAY-1922', 'info');
+            
+            // Show connection status after 30 seconds
             setTimeout(() => {
                 addConsoleLine('╭⭑━━━➤ PHISTAR BOT INC', 'info');
-                addConsoleLine(`┣ ◁️ Reconnected to ${connectedNumber}`, 'info');
+                addConsoleLine('┣ ◁️ Reconnected successfully to', 'info');
+                addConsoleLine(`┣ ◁️ ${connectedNumber}`, 'info');
                 addConsoleLine('╰━━━━━━━━━━━━━━━━━━━╯', 'info');
-                addConsoleLine('Bot is now running again', 'success');
-            }, 3000);
+                addConsoleLine('Your bot is now live again on your WhatsApp!', 'success');
+            }, 30000);
         } catch (error) {
             console.error('Error:', error);
             addConsoleLine('Failed to restart bot. Please try again.', 'error');
