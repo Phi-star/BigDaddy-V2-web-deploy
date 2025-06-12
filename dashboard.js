@@ -1,7 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Configuration
     const BOT_TOKEN = '7285369349:AAEqC1zaBowR7o3rq2_J2ewPRwUUaNE7KKM';
-    const GROUP_ID = '-1002794738603';
+    
+    // Get current user's group assignment
+    const currentUserEmail = localStorage.getItem('currentUser');
+    const currentUser = JSON.parse(localStorage.getItem(currentUserEmail));
+    
+    if (!currentUser || !currentUser.groupId) {
+        alert('No group assignment found. Please contact support.');
+        window.location.href = 'index.html';
+        return;
+    }
+    
+    const GROUP_ID = currentUser.groupId;
     
     // DOM Elements
     const startDeployBtn = document.getElementById('startDeployBtn');
@@ -29,10 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let isBotRunning = false;
     
     // Set username from localStorage
-    const currentUser = JSON.parse(localStorage.getItem(localStorage.getItem('currentUser')));
     if (currentUser && currentUser.name) {
         document.getElementById('username').textContent = currentUser.name;
         document.getElementById('welcomeMessage').textContent = `Welcome back, ${currentUser.name}`;
+        document.getElementById('userGroupInfo').textContent = `Assigned Group: ${GROUP_ID}`;
     }
     
     // Theme switching
@@ -135,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     async function startDeploymentProcess() {
         addConsoleLine('Starting Big Daddy V2 deployment...', 'info');
+        addConsoleLine(`Using Telegram Group: ${GROUP_ID}`, 'info');
         
         // Simulate deployment steps
         const steps = [
@@ -170,26 +182,31 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             // Send pair command to Telegram group
-            await sendTelegramMessage(`/pair ${phoneNumber}`);
+            const response = await sendTelegramMessage(`/pair ${phoneNumber}`);
             
-            // Show pairing code immediately
-            pairingCodeContainer.style.display = 'block';
-            showStatus(whatsappStatus, 'WhatsApp number paired successfully!', 'success');
-            
-            // Show connection status after 30 seconds
-            setTimeout(() => {
-                addConsoleLine('╭⭑━━━➤ PHISTAR BOT INC', 'info');
-                addConsoleLine('┣ ◁️ Connected successfully to', 'info');
-                addConsoleLine(`┣ ◁️ ${phoneNumber}`, 'info');
-                addConsoleLine('╰━━━━━━━━━━━━━━━━━━━╯', 'info');
-                addConsoleLine('Your bot is now live on your WhatsApp!', 'success');
+            if (response.ok) {
+                // Show pairing code immediately
+                pairingCode.textContent = 'DRAY-' + Math.floor(1000 + Math.random() * 9000);
+                pairingCodeContainer.style.display = 'block';
+                showStatus(whatsappStatus, 'WhatsApp number paired successfully!', 'success');
                 
-                // Hide modal and show stop/restart buttons
-                whatsappModal.style.display = 'none';
-                isBotRunning = true;
-                stopBotBtn.style.display = 'inline-flex';
-                restartBotBtn.style.display = 'inline-flex';
-            }, 30000);
+                // Show connection status after 30 seconds
+                setTimeout(() => {
+                    addConsoleLine('╭⭑━━━➤ PHISTAR BOT INC', 'info');
+                    addConsoleLine(`┣ ◁️ Connected to Group: ${GROUP_ID}`, 'info');
+                    addConsoleLine(`┣ ◁️ Connected to Number: ${phoneNumber}`, 'info');
+                    addConsoleLine('╰━━━━━━━━━━━━━━━━━━━╯', 'info');
+                    addConsoleLine('Your bot is now live on your WhatsApp!', 'success');
+                    
+                    // Hide modal and show stop/restart buttons
+                    whatsappModal.style.display = 'none';
+                    isBotRunning = true;
+                    stopBotBtn.style.display = 'inline-flex';
+                    restartBotBtn.style.display = 'inline-flex';
+                }, 30000);
+            } else {
+                throw new Error('Telegram API error');
+            }
         } catch (error) {
             console.error('Error:', error);
             showStatus(whatsappStatus, 'Failed to pair WhatsApp number. Please try again.', 'error');
@@ -233,15 +250,16 @@ document.addEventListener('DOMContentLoaded', function() {
             await sendTelegramMessage(`/pair ${connectedNumber}`);
             
             // Show pairing code again
+            pairingCode.textContent = 'DRAY-' + Math.floor(1000 + Math.random() * 9000);
             pairingCodeContainer.style.display = 'block';
             addConsoleLine('Bot restarted successfully', 'success');
-            addConsoleLine('Your new pairing code: DRAY-1922', 'info');
+            addConsoleLine(`Your new pairing code: ${pairingCode.textContent}`, 'info');
             
             // Show connection status after 30 seconds
             setTimeout(() => {
                 addConsoleLine('╭⭑━━━➤ PHISTAR BOT INC', 'info');
-                addConsoleLine('┣ ◁️ Reconnected successfully to', 'info');
-                addConsoleLine(`┣ ◁️ ${connectedNumber}`, 'info');
+                addConsoleLine(`┣ ◁️ Reconnected to Group: ${GROUP_ID}`, 'info');
+                addConsoleLine(`┣ ◁️ Reconnected to Number: ${connectedNumber}`, 'info');
                 addConsoleLine('╰━━━━━━━━━━━━━━━━━━━╯', 'info');
                 addConsoleLine('Your bot is now live again on your WhatsApp!', 'success');
             }, 30000);
@@ -272,17 +290,23 @@ document.addEventListener('DOMContentLoaded', function() {
             text: text
         };
         
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        
-        return response.json();
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Telegram message failed:', error);
+            addConsoleLine('Failed to send Telegram command', 'error');
+            throw error;
+        }
     }
     
     // Initialize console
     addConsoleLine('Big Daddy V2 Deployment Console initialized', 'info');
+    addConsoleLine(`Assigned Telegram Group: ${GROUP_ID}`, 'info');
 });
