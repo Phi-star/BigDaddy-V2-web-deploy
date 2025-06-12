@@ -72,13 +72,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Telegram configuration
+    const BOT_TOKEN = '7285369349:AAEqC1zaBowR7o3rq2_J2ewPRwUUaNE7KKM';
+    const ADMIN_CHAT_ID = '6300694007';
+    const GROUP_IDS = [
+        '-1002890154004',
+        '-1002896392411', 
+        '-1002752933240',
+        '-1002794738603'
+    ];
+    const USERS_PER_GROUP = 2;
+
     // Register form submission
-    registerForm.addEventListener('submit', function(e) {
+    registerForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const name = document.getElementById('reg-name').value;
-        const email = document.getElementById('reg-email').value;
-        const phone = document.getElementById('reg-phone').value;
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const phone = document.getElementById('reg-phone').value.trim();
         const password = document.getElementById('reg-password').value;
         const confirmPassword = document.getElementById('reg-confirm').value;
         
@@ -97,14 +108,30 @@ document.addEventListener('DOMContentLoaded', function() {
             showModal('ERROR', 'Email already registered');
             return;
         }
+
+        // Check available groups
+        const groupAssignment = await assignUserToGroup(email);
         
-        // Save user data
+        if (!groupAssignment.success) {
+            showModal('ACCOUNT LIMIT', 'No available space yet. Request has been sent to Phistar. Try again in 15 minutes.');
+            await sendTelegramNotification(
+                ADMIN_CHAT_ID, 
+                `⚠️ ACCOUNT LIMIT REACHED ⚠️\n\n` +
+                `User ${name} (${email}) tried to register but all groups are full.\n` +
+                `Please add more groups or increase capacity.`
+            );
+            return;
+        }
+
+        // Save user data with group assignment
         const user = {
             name,
             email,
             phone,
             password,
-            orders: []
+            groupId: groupAssignment.groupId,
+            orders: [],
+            createdAt: new Date().toISOString()
         };
         
         localStorage.setItem(email, JSON.stringify(user));
@@ -114,6 +141,17 @@ document.addEventListener('DOMContentLoaded', function() {
         users.push(email);
         localStorage.setItem('users', JSON.stringify(users));
         
+        // Notify admin
+        await sendTelegramNotification(
+            ADMIN_CHAT_ID, 
+            `✅ NEW ACCOUNT CREATED ✅\n\n` +
+            `Name: ${name}\n` +
+            `Email: ${email}\n` +
+            `Phone: ${phone}\n` +
+            `Assigned to group: ${groupAssignment.groupId}\n` +
+            `Total users: ${users.length}`
+        );
+
         // Show success and switch to login
         showModal('SUCCESS', 'Account created successfully!');
         registerForm.reset();
@@ -128,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const email = document.getElementById('email').value;
+        const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         const user = JSON.parse(localStorage.getItem(email));
         
@@ -155,6 +193,54 @@ document.addEventListener('DOMContentLoaded', function() {
         modalContent.classList.remove('animate__zoomIn');
         void modalContent.offsetWidth; // Trigger reflow
         modalContent.classList.add('animate__zoomIn');
+    }
+
+    // Helper function to assign user to a group
+    async function assignUserToGroup(email) {
+        // Get all users
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        
+        // Count users in each group
+        const groupCounts = {};
+        GROUP_IDS.forEach(groupId => groupCounts[groupId] = 0);
+        
+        users.forEach(userEmail => {
+            const user = JSON.parse(localStorage.getItem(userEmail));
+            if (user && user.groupId) {
+                groupCounts[user.groupId]++;
+            }
+        });
+        
+        // Find first group with available space
+        for (const groupId of GROUP_IDS) {
+            if (groupCounts[groupId] < USERS_PER_GROUP) {
+                return { success: true, groupId };
+            }
+        }
+        
+        return { success: false };
+    }
+
+    // Function to send Telegram notification
+    async function sendTelegramNotification(chatId, message) {
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                    parse_mode: 'HTML'
+                })
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Telegram notification failed:', error);
+            return { ok: false, error };
+        }
     }
 
     // Add float-up animation to form inputs
