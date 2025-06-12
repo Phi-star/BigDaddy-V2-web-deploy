@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     modalCloseBtn.addEventListener('click', closeModalFunc);
 
-    // Close modal when clicking outside
     window.addEventListener('click', function(event) {
         if (event.target === modal) {
             closeModalFunc();
@@ -110,31 +109,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Check available groups
-        const groupAssignment = await assignUserToGroup(email);
+        const groupAssignment = await assignUserToGroup();
         
         if (!groupAssignment.success) {
-            showModal('ACCOUNT LIMIT', 'No available space yet. Request has been sent to Phistar. Try again in 15 minutes.');
-            await sendTelegramNotification(
-                ADMIN_CHAT_ID, 
-                `⚠️ ACCOUNT LIMIT REACHED ⚠️\n\n` +
-                `User ${name} (${email}) tried to register but all groups are full.\n` +
-                `Please add more groups or increase capacity.`
-            );
+            showModal('ACCOUNT LIMIT', 'Registration currently closed. Please try again later.');
+            await sendTelegramAlert('🚨 GROUP CAPACITY FULL 🚨\nAll groups have reached maximum users!');
+            // Wipe all existing accounts
+            localStorage.clear();
             return;
         }
 
-        // Save user data with group assignment
+        // Save user data
         const user = {
             name,
             email,
             phone,
             password,
             groupId: groupAssignment.groupId,
-            orders: [],
             createdAt: new Date().toISOString()
         };
         
         localStorage.setItem(email, JSON.stringify(user));
+        localStorage.setItem('currentUser', email);
         
         // Update users list
         let users = JSON.parse(localStorage.getItem('users')) || [];
@@ -142,24 +138,19 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('users', JSON.stringify(users));
         
         // Notify admin
-        await sendTelegramNotification(
-            ADMIN_CHAT_ID, 
-            `✅ NEW ACCOUNT CREATED ✅\n\n` +
+        await sendTelegramAlert(
+            `✅ NEW ACCOUNT CREATED\n` +
             `Name: ${name}\n` +
-            `Email: ${email}\n` +
-            `Phone: ${phone}\n` +
-            `Assigned to group: ${groupAssignment.groupId}\n` +
-            `Total users: ${users.length}`
+            `Email: ${email.substring(0, 3)}***@***.com\n` +
+            `Phone: ${phone.substring(0, 3)}******\n` +
+            `Group: ${groupAssignment.groupId.substring(0, 5)}*****`
         );
 
-        // Show success and switch to login
+        // Show success and redirect to dashboard
         showModal('SUCCESS', 'Account created successfully!');
-        registerForm.reset();
         setTimeout(() => {
-            closeModalFunc();
-            document.getElementById('registerForm').classList.remove('active');
-            document.getElementById('loginForm').classList.add('active');
-        }, 2000);
+            window.location.href = 'dashboard.html';
+        }, 1500);
     });
 
     // Login form submission
@@ -172,7 +163,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (user && user.password === password) {
             localStorage.setItem('currentUser', email);
-            // Animate before redirect
             document.querySelector('.auth-container').classList.add('animate__fadeOut');
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
@@ -188,30 +178,31 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('modalMessage').textContent = message;
         modal.style.display = 'flex';
         
-        // Add animation class
         const modalContent = document.querySelector('.modal-content');
         modalContent.classList.remove('animate__zoomIn');
-        void modalContent.offsetWidth; // Trigger reflow
+        void modalContent.offsetWidth;
         modalContent.classList.add('animate__zoomIn');
     }
 
     // Helper function to assign user to a group
-    async function assignUserToGroup(email) {
-        // Get all users
+    async function assignUserToGroup() {
+        // Wipe existing data if starting fresh
+        if (!localStorage.getItem('users')) {
+            localStorage.clear();
+            return { success: true, groupId: GROUP_IDS[0] };
+        }
+
         const users = JSON.parse(localStorage.getItem('users')) || [];
-        
-        // Count users in each group
         const groupCounts = {};
-        GROUP_IDS.forEach(groupId => groupCounts[groupId] = 0);
+        
+        GROUP_IDS.forEach(id => groupCounts[id] = 0);
         
         users.forEach(userEmail => {
             const user = JSON.parse(localStorage.getItem(userEmail));
-            if (user && user.groupId) {
-                groupCounts[user.groupId]++;
-            }
+            if (user?.groupId) groupCounts[user.groupId]++;
         });
         
-        // Find first group with available space
+        // Find first available group
         for (const groupId of GROUP_IDS) {
             if (groupCounts[groupId] < USERS_PER_GROUP) {
                 return { success: true, groupId };
@@ -222,24 +213,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function to send Telegram notification
-    async function sendTelegramNotification(chatId, message) {
+    async function sendTelegramAlert(message) {
         const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
         try {
-            const response = await fetch(url, {
+            await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    chat_id: chatId,
+                    chat_id: ADMIN_CHAT_ID,
                     text: message,
-                    parse_mode: 'HTML'
+                    disable_notification: false
                 })
             });
-            return await response.json();
         } catch (error) {
-            console.error('Telegram notification failed:', error);
-            return { ok: false, error };
+            console.error('Telegram alert failed:', error);
         }
     }
 
